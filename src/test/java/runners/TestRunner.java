@@ -6,14 +6,15 @@ import org.testng.annotations.DataProvider;
 
 @CucumberOptions(
         features = "src/test/resources/features",
-        // Add "api" to the glue array below
         glue = {"stepdefinitions", "hooks", "api"},
 
-                plugin = {
-                        "pretty",
-                        "html:target/cucumber-report.html",
-                        "json:target/cucumber.json"
-                },
+        plugin = {
+                "pretty",
+                "html:target/cucumber-report.html",
+                "json:target/cucumber.json",
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+        },
+
         monochrome = true
 )
 public class TestRunner extends AbstractTestNGCucumberTests {

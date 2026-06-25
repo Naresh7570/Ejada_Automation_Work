@@ -25,19 +25,6 @@ Feature: SauceDemo User Personas
     When user logs in with "error_user" and "secret_sauce"
     Then user should experience checkout completion anomaly
 
-#  Scenario: Validate complete product catalog data
-#    Given user is on login page
-#    When user logs in with "visual_user" and "secret_sauce"
-#    Then following products should be displayed
-#      | Product                     | Price  |
-#      | Sauce Labs Backpack         | $29.99 |
-#      | Sauce Labs Bike Light       | $9.99  |
-#      | Sauce Labs Bolt T-Shirt     | $15.99 |
-#      | Sauce Labs Fleece Jacket    | $49.99 |
-#      | Sauce Labs Onesie           | $7.99  |
-#      | Test.allTheThings() T-Shirt | $15.99 |
-#    Then verifyBackpackImage
-
   Scenario: Visual User Validation
     Given user is on login page
     When user logs in with "visual_user" and "secret_sauce"

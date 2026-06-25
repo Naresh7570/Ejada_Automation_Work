@@ -6,7 +6,7 @@ import java.io.File;
 
 public class ImageComparisonUtil {
 
-    public static boolean imagesAreDifferent(
+    public static boolean imagesAreSame(
             File baseline,
             File actual) throws Exception {
 
@@ -15,18 +15,18 @@ public class ImageComparisonUtil {
 
         if (img1.getWidth() != img2.getWidth()
                 || img1.getHeight() != img2.getHeight()) {
-            return true;
+            return false;
         }
 
         for (int x = 0; x < img1.getWidth(); x++) {
             for (int y = 0; y < img1.getHeight(); y++) {
 
                 if (img1.getRGB(x, y) != img2.getRGB(x, y)) {
-                    return true;
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
     }
 }

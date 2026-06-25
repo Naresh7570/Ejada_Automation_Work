@@ -2,7 +2,8 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -10,10 +11,11 @@
     <artifactId>Ejada_Automation_Work</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <!-- ===================== -->
-    <!-- 🔥 Versions Section -->
-    <!-- ===================== -->
+    <!-- ====================================================== -->
+    <!-- Properties -->
+    <!-- ====================================================== -->
     <properties>
+
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -21,50 +23,36 @@
         <cucumber.version>7.18.0</cucumber.version>
         <testng.version>7.10.2</testng.version>
 
-        <allure.version>2.27.0</allure.version>
         <restassured.version>5.5.0</restassured.version>
-
+        <allure.version>2.27.0</allure.version>
         <json.version>20240303</json.version>
         <slf4j.version>2.0.13</slf4j.version>
-
-        <!-- 🔥 IMPORTANT FIX -->
         <aspectj.version>1.9.22</aspectj.version>
+
     </properties>
 
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <!-- Dependency Management -->
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <dependencyManagement>
+
         <dependencies>
 
-            <!-- Commons dependencies -->
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.17.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
-            </dependency>
-
-            <!-- 🔥 CUCUMBER BOM (correct placement) -->
             <dependency>
                 <groupId>io.cucumber</groupId>
                 <artifactId>cucumber-bom</artifactId>
-                <version>7.18.0</version>
+                <version>${cucumber.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
         </dependencies>
+
     </dependencyManagement>
 
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <!-- Dependencies -->
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <dependencies>
 
         <!-- Selenium -->
@@ -73,11 +61,14 @@
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
+
+        <!-- WebDriverManager -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
             <version>5.9.2</version>
         </dependency>
+
         <!-- Cucumber -->
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -113,7 +104,7 @@
             <version>${json.version}</version>
         </dependency>
 
-        <!-- Image comparison -->
+        <!-- Image Comparison -->
         <dependency>
             <groupId>com.github.romankh3</groupId>
             <artifactId>image-comparison</artifactId>
@@ -128,7 +119,20 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- AspectJ (FIXED VERSION) -->
+        <!-- Allure -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <!-- AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -138,10 +142,11 @@
 
     </dependencies>
 
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <!-- Build Plugins -->
-    <!-- ===================== -->
+    <!-- ====================================================== -->
     <build>
+
         <plugins>
 
             <!-- Compiler -->
@@ -149,9 +154,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
+
             </plugin>
 
             <!-- Surefire -->
@@ -161,11 +168,11 @@
                 <version>3.3.1</version>
 
                 <configuration>
+
                     <suiteXmlFiles>
                         <suiteXmlFile>testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
 
-                    <!-- 🔥 CLEAN JAVA AGENT FIX -->
                     <argLine>
                         -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
                     </argLine>
@@ -179,6 +186,8 @@
             </plugin>
 
         </plugins>
+
     </build>
 
 </project>
+

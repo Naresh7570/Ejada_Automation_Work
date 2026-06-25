@@ -20,26 +20,46 @@ public class LoginPage {
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(ConfigReader.getInt("explicit.wait.seconds", 15)));
+
+        this.wait = new WebDriverWait(
+                driver,
+                Duration.ofSeconds(
+                        ConfigReader.getInt(
+                                "explicit.wait.seconds",
+                                15)));
     }
 
     public void open() {
-        driver.get(ConfigReader.getOrDefault("saucedemo.url", "https://www.saucedemo.com/"));
+        driver.get(ConfigReader.get("url"));
     }
 
     public void login(String user, String pass) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(username)).clear();
-        driver.findElement(username).sendKeys(user == null ? "" : user);
+
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(username));
+
+        driver.findElement(username).clear();
+        driver.findElement(username)
+                .sendKeys(user == null ? "" : user);
+
         driver.findElement(password).clear();
-        driver.findElement(password).sendKeys(pass == null ? "" : pass);
+        driver.findElement(password)
+                .sendKeys(pass == null ? "" : pass);
+
         driver.findElement(loginBtn).click();
     }
 
     public String getErrorMessage() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessage)).getText();
+        return wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(
+                                errorMessage))
+                .getText();
     }
 
     public boolean isDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(loginBtn)).isDisplayed();
+        return wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(
+                                loginBtn))
+                .isDisplayed();
     }
 }

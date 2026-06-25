@@ -1,4 +1,5 @@
 package api;
+
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -6,6 +7,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import utils.ConfigReader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,6 @@ import static org.hamcrest.Matchers.*;
 
 public class SimpleBooksApiTest {
 
-    private static final String BASE_URL = "https://simple-books-api.click";
     private RequestSpecification authenticatedSpec;
     private String orderId;
 
@@ -24,12 +25,21 @@ public class SimpleBooksApiTest {
     // ============================================
     @BeforeClass
     public void setUp() {
-        RestAssured.baseURI = BASE_URL;
 
-        // Create body payload for Authentication
+        String baseUrl = ConfigReader.get("api.base.url");
+        String clientName = ConfigReader.get("api.client.name");
+
+        RestAssured.baseURI = baseUrl;
+
+        // Authentication Payload
         Map<String, String> authBody = new HashMap<>();
-        authBody.put("clientName", "RestAssured Client");
-        authBody.put("clientEmail", "test" + System.currentTimeMillis() + "@mail.com");
+        authBody.put("clientName", clientName);
+
+        // API requires unique email every execution
+        authBody.put(
+                "clientEmail",
+                "test" + System.currentTimeMillis() + "@mail.com"
+        );
 
         // Generate Token
         Response authResponse = given()
@@ -40,14 +50,20 @@ public class SimpleBooksApiTest {
 
         authResponse.then().statusCode(201);
 
-        String token = authResponse.jsonPath().getString("accessToken");
+        String token = authResponse.jsonPath()
+                .getString("accessToken");
+
         System.out.println("Generated Token: " + token);
 
-        // Build the reusable authenticated request specification
+        // Reusable Authenticated Spec
         authenticatedSpec = new RequestSpecBuilder()
-                .setBaseUri(BASE_URL)
-                .addHeader("Authorization", "Bearer " + token)
-                .addHeader("Accept", "application/json")
+                .setBaseUri(baseUrl)
+                .addHeader(
+                        "Authorization",
+                        "Bearer " + token)
+                .addHeader(
+                        "Accept",
+                        "application/json")
                 .setContentType(ContentType.JSON)
                 .build();
     }
@@ -57,6 +73,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 1)
     public void getAllBooks() {
+
         given()
                 .when()
                 .get("/books")
@@ -71,6 +88,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 2)
     public void getSingleBook() {
+
         given()
                 .when()
                 .get("/books/1")
@@ -86,12 +104,15 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 3)
     public void getInvalidBook() {
+
         given()
                 .when()
                 .get("/books/999")
                 .then()
                 .statusCode(404)
-                .body("error", containsString("No book with id"))
+                .body(
+                        "error",
+                        containsString("No book with id"))
                 .log().body();
     }
 
@@ -100,6 +121,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 4)
     public void createOrder() {
+
         Map<String, Object> orderBody = new HashMap<>();
         orderBody.put("bookId", 1);
         orderBody.put("customerName", "Naveen");
@@ -110,11 +132,15 @@ public class SimpleBooksApiTest {
                 .when()
                 .post("/orders");
 
-        response.then().statusCode(201)
+        response.then()
+                .statusCode(201)
                 .body("created", equalTo(true));
 
-        orderId = response.jsonPath().getString("orderId");
-        System.out.println("Created Order ID: " + orderId);
+        orderId = response.jsonPath()
+                .getString("orderId");
+
+        System.out.println(
+                "Created Order ID: " + orderId);
     }
 
     // ============================================
@@ -122,6 +148,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 5)
     public void getOrders() {
+
         given()
                 .spec(authenticatedSpec)
                 .when()
@@ -137,6 +164,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 6)
     public void updateOrder() {
+
         Map<String, String> updateBody = new HashMap<>();
         updateBody.put("customerName", "Updated User");
 
@@ -148,7 +176,8 @@ public class SimpleBooksApiTest {
                 .then()
                 .statusCode(204);
 
-        System.out.println("Order Updated Successfully");
+        System.out.println(
+                "Order Updated Successfully");
     }
 
     // ============================================
@@ -156,6 +185,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 7)
     public void deleteOrder() {
+
         given()
                 .spec(authenticatedSpec)
                 .when()
@@ -163,7 +193,8 @@ public class SimpleBooksApiTest {
                 .then()
                 .statusCode(204);
 
-        System.out.println("Order Deleted Successfully");
+        System.out.println(
+                "Order Deleted Successfully");
     }
 
     // ============================================
@@ -171,6 +202,7 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 8)
     public void verifyDeletedOrder() {
+
         given()
                 .spec(authenticatedSpec)
                 .when()
@@ -178,7 +210,8 @@ public class SimpleBooksApiTest {
                 .then()
                 .statusCode(404);
 
-        System.out.println("Verified Deleted Order");
+        System.out.println(
+                "Verified Deleted Order");
     }
 
     // ============================================
@@ -186,13 +219,19 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 9)
     public void accessOrdersWithInvalidToken() {
+
         given()
-                .header("Authorization", "Bearer invalid_token")
+                .header(
+                        "Authorization",
+                        "Bearer invalid_token")
                 .when()
                 .get("/orders")
                 .then()
                 .statusCode(401)
-                .body("error", containsString("Invalid bearer token"))
+                .body(
+                        "error",
+                        containsString(
+                                "Invalid bearer token"))
                 .log().body();
     }
 
@@ -201,12 +240,16 @@ public class SimpleBooksApiTest {
     // ============================================
     @Test(priority = 10)
     public void accessOrdersWithoutToken() {
+
         given()
                 .when()
                 .get("/orders")
                 .then()
                 .statusCode(401)
-                .body("error", containsString("Missing Authorization header"))
+                .body(
+                        "error",
+                        containsString(
+                                "Missing Authorization header"))
                 .log().body();
     }
 }

@@ -43,31 +43,37 @@ public class LoginSteps {
 // STANDARD USER
 // ==========================
 
-    @Then("user completes purchase successfully")
-    public void user_completes_purchase_successfully() {
+@Then("user completes purchase successfully")
+public void user_completes_purchase_successfully() {
 
-        // Take baseline screenshot of inventory page
-        inventoryPage.captureScreenshot("standard_user");
+    System.out.println("\n========== STANDARD USER TEST STARTED ==========");
 
-        inventoryPage.addBackpackToCart();
+    inventoryPage.captureScreenshot("standard_user");
+    System.out.println("✓ Baseline screenshot captured");
 
-        inventoryPage.clickCart();
+    inventoryPage.addBackpackToCart();
+    System.out.println("✓ Product added to cart");
 
-        cartPage.checkout();
+    inventoryPage.clickCart();
+    System.out.println("✓ Navigated to Cart page");
 
-        checkoutPage.enterFirstName("John");
-        checkoutPage.enterLastName("Doe");
-        checkoutPage.enterPostalCode("12345");
+    cartPage.checkout();
+    System.out.println("✓ Checkout initiated");
 
-        checkoutPage.clickContinue();
+    checkoutPage.enterFirstName("John");
+    checkoutPage.enterLastName("Doe");
+    checkoutPage.enterPostalCode("12345");
 
-        checkoutPage.finish();
+    checkoutPage.clickContinue();
+    checkoutPage.finish();
 
-        Assert.assertTrue(
-                checkoutPage.getConfirmationMessage().contains("Thank you"),
-                "Order was not completed successfully");
-    }
+    Assert.assertTrue(
+            checkoutPage.getConfirmationMessage().contains("Thank you"),
+            "Order was not completed successfully");
 
+    System.out.println("✅ STANDARD USER: Purchase completed successfully");
+    System.out.println("=================================================\n");
+}
 // ==========================
 // LOCKED USER
 // ==========================
@@ -77,10 +83,17 @@ public class LoginSteps {
 
         String actualMessage = loginPage.getErrorMessage();
 
+        System.out.println("\n========== LOCKED USER TEST ==========");
+        System.out.println("Expected Error : " + expectedMessage);
+        System.out.println("Actual Error   : " + actualMessage);
+
         Assert.assertEquals(
                 actualMessage.trim(),
                 expectedMessage,
                 "Login error message mismatch");
+
+        System.out.println("✅ LOCKED USER validation successful");
+        System.out.println("======================================\n");
     }
 
 // ==========================
@@ -89,10 +102,11 @@ public class LoginSteps {
 
     @Then("user should experience checkout validation issue")
     public void user_should_experience_checkout_validation_issue() {
+
+        System.out.println("\n========== PROBLEM USER TEST ==========");
+
         inventoryPage.addBackpackToCart();
-
         inventoryPage.clickCart();
-
         cartPage.checkout();
 
         checkoutPage.enterFirstName("John");
@@ -101,11 +115,17 @@ public class LoginSteps {
 
         checkoutPage.clickContinue();
 
-        Assert.assertEquals(
-                checkoutPage.getErrorMessage().trim(),
-                "Error: Last Name is required");
-    }
+        String actualError = checkoutPage.getErrorMessage().trim();
 
+        System.out.println("Validation Error : " + actualError);
+
+        Assert.assertEquals(
+                actualError,
+                "Error: Last Name is required");
+
+        System.out.println("✅ PROBLEM USER validation completed");
+        System.out.println("======================================\n");
+    }
 // ==========================
 // PERFORMANCE USER
 // ==========================
@@ -113,11 +133,15 @@ public class LoginSteps {
     @Then("user should reach inventory page despite delayed loading")
     public void user_should_reach_inventory_page_despite_delayed_loading() {
 
+        System.out.println("\n========== PERFORMANCE USER TEST ==========");
+
         Assert.assertTrue(
                 inventoryPage.isLoaded(),
                 "Inventory page did not load within expected time");
-    }
 
+        System.out.println("✅ PERFORMANCE USER page loaded successfully");
+        System.out.println("===========================================\n");
+    }
 // ==========================
 // ERROR USER
 // ==========================
@@ -125,10 +149,10 @@ public class LoginSteps {
     @Then("user should experience checkout completion anomaly")
     public void user_should_experience_checkout_completion_anomaly() {
 
+        System.out.println("\n========== ERROR USER TEST ==========");
+
         inventoryPage.addBackpackToCart();
-
         inventoryPage.clickCart();
-
         cartPage.checkout();
 
         checkoutPage.enterFirstName("John");
@@ -148,14 +172,17 @@ public class LoginSteps {
                     confirmationMessage,
                     "Confirmation message was not displayed");
 
+            System.out.println("✅ ERROR USER completed checkout");
+            System.out.println("Confirmation : " + confirmationMessage);
+
         } catch (Exception e) {
 
-            System.out.println(
-                    "Expected error_user anomaly detected: "
-                            + e.getMessage());
+            System.out.println("⚠ Expected anomaly detected for ERROR USER");
+            System.out.println("Exception : " + e.getMessage());
         }
-    }
 
+        System.out.println("======================================\n");
+    }
 // ==========================
 // VISUAL USER
 // ==========================
@@ -164,21 +191,33 @@ public class LoginSteps {
     public void visual_user_page_should_differ_from_standard_user_page()
             throws Exception {
 
+        System.out.println("\n========== VISUAL USER TEST ==========");
+
         File standardScreenshot =
                 new File("src/test/resources/screenshots/standard_user.png");
 
         File visualScreenshot =
                 inventoryPage.captureScreenshot("visual_user");
 
-        System.out.println("Standard: " + standardScreenshot.getAbsolutePath());
-        System.out.println("Exists: " + standardScreenshot.exists());
+        System.out.println("Baseline Screenshot : "
+                + standardScreenshot.getAbsolutePath());
 
-        System.out.println("Visual: " + visualScreenshot.getAbsolutePath());
-        System.out.println("Exists: " + visualScreenshot.exists());
-        Assert.assertTrue(
-                ImageComparisonUtil.imagesAreDifferent(
+        System.out.println("Actual Screenshot   : "
+                + visualScreenshot.getAbsolutePath());
+
+        boolean areSame =
+                ImageComparisonUtil.imagesAreSame(
                         standardScreenshot,
-                        visualScreenshot),
-                "Visual user page appears identical to standard user page");
+                        visualScreenshot);
+
+        if (areSame) {
+
+            System.out.println("❌ No visual differences detected");
+            Assert.fail(
+                    "Expected visual differences, but screenshots are identical.");
+        }
+
+        System.out.println("✅ Visual differences detected successfully");
+        System.out.println("======================================\n");
     }
 }
