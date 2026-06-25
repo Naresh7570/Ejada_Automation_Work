@@ -1,56 +1,125 @@
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-
-# IntelliJ
+# =========================
+# IntelliJ IDEA
+# =========================
 .idea/
 *.iml
+out/
 
+# =========================
 # Eclipse
+# =========================
 .project
 .classpath
 .settings/
 
+# =========================
 # VS Code
+# =========================
 .vscode/
 
+# =========================
+# Maven
+# =========================
+target/
+dependency-reduced-pom.xml
+
+# Maven Wrapper (keep if using wrapper)
+# Uncomment if you don't want to commit wrapper files
+# .mvn/
+# mvnw
+# mvnw.cmd
+
+# =========================
+# Build Files
+# =========================
+*.class
+*.jar
+*.war
+*.ear
+
+# =========================
 # Logs
+# =========================
 *.log
 logs/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Selenium screenshots/videos
-screenshots/
-test-output/screenshots/
-videos/
-
-# Allure
-allure-report/
+# =========================
+# Test Reports
+# =========================
 allure-results/
-
-# TestNG
+allure-report/
 test-output/
 surefire-reports/
+failsafe-reports/
+cucumber-reports/
+extent-report/
+reports/
+screenshots/
 
-# Environment files
-.env
+# HTML Reports
+*.html
 
-# Temporary files
+# =========================
+# Screenshots & Videos
+# =========================
+*.png
+*.jpg
+*.jpeg
+videos/
+
+# Uncomment if screenshots are important for documentation
+# !src/test/resources/screenshots/*.png
+
+# =========================
+# Temporary Files
+# =========================
 *.tmp
+*.temp
+*.swp
+*.swo
+*~
 
-# Compiled files
-*.class
+# =========================
+# OS Generated Files
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# Generated reports
-cucumber-report.html
-cucumber.json
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+config.properties
+application.properties
 
-# Node modules (if any)
-node_modules
+# Keep sample config files
+!config.properties.example
+
+# =========================
+# Selenium Drivers (Optional)
+# =========================
+drivers/
+chromedriver*
+geckodriver*
+msedgedriver*
+
+# =========================
+# Package Managers
+# =========================
+node_modules/
+
+# =========================
+# Archive Files
+# =========================
+*.zip
+*.tar
+*.gz
+*.rar
+
+# =========================
+# Misc
+# =========================
+*.bak
+*.orig
